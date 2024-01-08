@@ -5,12 +5,35 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'black',
   },
+  button: {
+    padding: 10,
+    backgroundColor: 'gold',
+    borderRadius: 10,
+    elevation: 4, // Adding elevation for Android shadow effect
+  },
+  buttonText: {
+    color: 'black',
+    textAlign: 'center',
+    fontSize: 16,
+  },
+  passingView: {
+    position: 'absolute',
+    height: 200,
+    width: 13,
+    backgroundColor: 'lightgray', // Gray color for passing view
+    top: 0,
+    left: 0,
+  },
   subcontainer: {
     justifyContent: 'center',
     alignItems: 'center',
     height: '100%',
     backgroundColor: 'black',
     flex: 1,
+  },
+  buttonContainer: {
+    position: 'relative',
+    overflow: 'hidden', // Clip the overflow of the passing view outside the button
   },
   heading: {fontSize: 25, color: 'white'},
   subt: {
@@ -31,8 +54,8 @@ export const styles = StyleSheet.create({
   },
   counttext: {
     padding: 5,
-    backgroundColor: 'white',
     fontSize: 25,
+    color: 'gold',
     bottom: 45,
   },
   faceflip: {height: 250, width: 200, backgroundColor: 'black'},
@@ -55,14 +78,26 @@ export const styles = StyleSheet.create({
   },
   gold: {height: 351, width: 600, top: 100},
   head: {
-    color: 'red',
+    color: 'gold',
     top: 301,
-    left: 103,
+    left: 123,
+    fontSize: 25,
+    marginBottom: 25,
+  },
+  heade: {
+    color: 'gold',
+    top: 301,
+    left: 55,
+    fontSize: 25,
   },
   clickview: {
     height: 50,
-    borderRadius: 20,
-    backgroundColor: 'white',
+    // borderRadius: 20,
+    // backgroundColor: 'white',
+    padding: 10,
+    backgroundColor: 'gold',
+    borderRadius: 10,
+    elevation: 4,
   },
   clickbutton: {color: 'black', fontSize: 20, left: 9, top: 9},
   // Add more styles as needed...

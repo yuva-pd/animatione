@@ -1,13 +1,11 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import ShimmerPlaceholder from 'react-native-shimmer-placeholder';
 import * as Animatable from 'react-native-animatable';
-
 import {
   View,
   Text,
   TouchableOpacity,
   Animated,
-  Easing,
   Dimensions,
   Image,
 } from 'react-native';
@@ -29,6 +27,9 @@ const Dashboard = () => {
   // Animated values initialization
   const windowWidth = Dimensions.get('window').width;
   const windowHeight = Dimensions.get('window').height;
+  const [startAnimation, setStartAnimation] = useState(false);
+  const animatedValue = useRef(new Animated.Value(-60)).current;
+  const animationRef = useRef(null);
   const [flip, setFlip] = useState(false);
   const [main, setMain] = useState(false);
   const initPosition = {
@@ -61,6 +62,9 @@ const Dashboard = () => {
     ding.setVolume(1);
     return () => {
       ding.release();
+      if (animationRef.current) {
+        clearInterval(animationRef.current);
+      }
     };
   }, []);
   // Sound play function
@@ -75,6 +79,7 @@ const Dashboard = () => {
   };
   // Animation function
   const handleAnimation = () => {
+    handlePress();
     setMain(true);
     translations.forEach((translation, index) => {
       const delay = 100 * index;
@@ -141,10 +146,26 @@ const Dashboard = () => {
       });
     });
   };
-
+  //button animation
+  const handlePress = () => {
+    if (!startAnimation) {
+      animatedValue.setValue(-60);
+      setTimeout(() => {
+        setStartAnimation(true);
+        animationRef.current = setInterval(() => {
+          Animated.timing(animatedValue, {
+            toValue: 260,
+            duration: 103,
+            useNativeDriver: false,
+          }).start(() => {});
+        }, 1000);
+      }, 1000);
+    }
+    setStartAnimation(false);
+  };
   return (
     <View style={styles.container}>
-      {true ? (
+      {main ? (
         <View style={styles.subcontainer}>
           <View
             style={{
@@ -157,17 +178,10 @@ const Dashboard = () => {
               iterationCount="infinite">
               <ShimmerPlaceholder
                 style={styles.subt}
-                shimmerColors={['#e0aa07', '#DDDDDD', '#E2E2E2']} // Adjust the shimmer effect colors
+                shimmerColors={['#e0aa07', '#DDDDDD', '#E2E2E2']}
                 duration={1500}
                 shimmering={bshimmering}>
-                <Text
-                  style={{
-                    color: 'transparent',
-                    textAlign: 'center',
-                    lineHeight: 50,
-                  }}>
-                  Press Me
-                </Text>
+                <Image source={require('./assets/images/coin.png')} />
               </ShimmerPlaceholder>
             </Animatable.View>
             {animationCount >= 0 ? (
@@ -224,7 +238,11 @@ const Dashboard = () => {
                       },
                       styles.animate,
                     ]}>
-                    <Text>{index + 1}</Text>
+                    {/* <Text>{index + 1}</Text> */}
+                    <Image
+                      style={{width: 33, height: 33}}
+                      source={require('./assets/images/coin.png')}
+                    />
                   </Animated.View>
                 ))}
               </View>
@@ -236,27 +254,58 @@ const Dashboard = () => {
                 uri: 'https://www.google.com/url?=&url=https%3A%2F%2Fwww.amazon.in%2FFeyarl-Treasure-Rectangle-Metallic-Finished%2Fdp%2FB07F69PLSK&psig=AOvVaw1fEBl7ppPrZ9ts1PmqII4h&ust=1704733888506000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCJCM3eTiy4MDFQAAAAAdAAAAABAD',
               }}
               style={{width: 200, height: 200}}
-              // resizeMode="cover"
             />
-            <TouchableOpacity
-              onPress={handleAnimation}
-              style={[
-                {
-                  width: !flip ? 200 : 250,
-                  bottom: !flip ? 270 : -100,
-                },
-                styles.clickview,
-              ]}>
-              {flip ? (
-                <Text style={styles.clickbutton}>
-                  click on me to collect coins
-                </Text>
-              ) : (
-                <Text style={styles.clickbutton}>
-                  click on above card to see suprise
-                </Text>
-              )}
-            </TouchableOpacity>
+            {flip ? (
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  style={[
+                    {
+                      width: 250,
+                      marginBottom: 0,
+                    },
+                    styles.clickview,
+                  ]}
+                  onPress={handleAnimation}>
+                  <Text style={styles.buttonText}>
+                    Click on me to collect coins
+                  </Text>
+                </TouchableOpacity>
+                <Animated.View
+                  style={[
+                    styles.passingView,
+                    {
+                      transform: [{translateX: animatedValue}],
+                    },
+                  ]}
+                />
+              </View>
+            ) : (
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  style={[
+                    {
+                      width: 250,
+                      marginBottom: 0,
+                    },
+                    styles.clickview,
+                  ]}
+                  onPress={handleAnimation}>
+                  <Text style={styles.buttonText}>
+                    Click on above card to suprise
+                  </Text>
+                </TouchableOpacity>
+                <Animated.View
+                  style={[
+                    styles.passingView,
+                    {
+                      transform: [{translateX: animatedValue}],
+                    },
+                  ]}
+                />
+              </View>
+            )}
           </View>
           {flip ? (
             <Image
@@ -271,7 +320,8 @@ const Dashboard = () => {
         </View>
       ) : (
         <TouchableOpacity onPress={() => handleAnimation()}>
-          <Text style={styles.head}>click on me LETS START THE GAME !!!</Text>
+          <Text style={styles.head}>click on me </Text>
+          <Text style={styles.heade}>LETS START THE GAME !!!</Text>
         </TouchableOpacity>
       )}
     </View>

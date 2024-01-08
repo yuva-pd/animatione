@@ -17,6 +17,7 @@
     "react-native-flip-card": "^3.5.7",
     "react-native-gesture-handler": "^2.14.0",
     "react-native-js-shimmer-placeholder": "^1.0.7",
+    "react-native-shimmer": "^0.6.0",
     "react-native-shimmer-placeholder": "^2.0.9",
     "react-native-sound": "^0.11.2",
     "react-native-svg": "^14.1.0",
