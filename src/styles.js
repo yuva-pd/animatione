@@ -25,9 +25,9 @@ export const styles = StyleSheet.create({
   },
   passingView: {
     position: 'absolute',
-    height: 200,
+    height: 55,
     width: 13,
-    backgroundColor: 'lightgray', // Gray color for passing view
+    backgroundColor: 'white', // Gray color for passing view
     top: 0,
     left: 0,
   },
@@ -39,6 +39,11 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   buttonContainer: {
+    position: 'relative',
+    overflow: 'hidden', // Clip the overflow of the passing view outside the button
+  },
+  buttonContaine: {
+    marginTop: 39,
     position: 'relative',
     overflow: 'hidden', // Clip the overflow of the passing view outside the button
   },
@@ -83,7 +88,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     paddingBottom: 20,
   },
-  gold: {height: 351, width: 600, top: 100},
+  gold: {height: 301, width: 600, top: 100},
   head: {
     color: 'gold',
     top: 301,

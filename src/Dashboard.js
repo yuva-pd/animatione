@@ -5,6 +5,7 @@ import {
   View,
   Text,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   Animated,
   Dimensions,
   Image,
@@ -38,6 +39,7 @@ const Dashboard = () => {
     x: parseInt(windowWidth / 2) - 50,
     y: parseInt(windowHeight / 2) - 50,
   };
+  const [animation] = useState(new Animated.Value(0));
 
   const [translations] = useState(() => {
     const initialTranslations = Array.from({length: 10}, (_, i) => {
@@ -180,20 +182,41 @@ const Dashboard = () => {
   };
   //button animation
   const handlePress = () => {
-    if (!startAnimation) {
-      animatedValue.setValue(-60);
-      setTimeout(() => {
-        setStartAnimation(true);
-        animationRef.current = setInterval(() => {
-          Animated.timing(animatedValue, {
-            toValue: 260,
-            duration: 3000,
-            useNativeDriver: false,
-          }).start(() => {});
-        }, 2000);
-      }, 2000);
-    }
-    setStartAnimation(false);
+    clearInterval(animationRef.current);
+    animatedValue.setValue(-60);
+    setStartAnimation(true);
+
+    Animated.sequence([
+      Animated.timing(animatedValue, {
+        toValue: 260,
+        duration: 2500, // Adjust the duration for the desired animation speed
+        useNativeDriver: false,
+      }),
+      Animated.timing(animatedValue, {
+        toValue: -60,
+        duration: 0, // No delay for immediate transition to initial value
+        useNativeDriver: false,
+      }),
+    ]).start(() => {
+      setStartAnimation(false);
+    });
+  };
+  const inner = {
+    borderRadius: animation.interpolate({
+      inputRange: [0, 1],
+      outputRange: [12, 16],
+    }),
+  };
+
+  const heightStyle = {
+    marginTop: animation.interpolate({
+      inputRange: [0, 1],
+      outputRange: [-15, 0],
+    }),
+    paddingBottom: animation.interpolate({
+      inputRange: [0, 1],
+      outputRange: [15, 0],
+    }),
   };
   return (
     <View style={styles.container}>
@@ -222,7 +245,7 @@ const Dashboard = () => {
               </View>
             ) : null}
             <FlipCard
-              style={{top: 45}}
+              style={{top: 35}}
               friction={6}
               perspective={1000}
               flipHorizontal={true}
@@ -235,7 +258,6 @@ const Dashboard = () => {
               }}>
               {/* Face Side */}
               <View style={styles.faceflip}>
-                <Text style={{color: 'white'}}>The Face</Text>
                 <Image
                   style={styles.faceimage}
                   source={{
@@ -251,8 +273,6 @@ const Dashboard = () => {
                     uri: 'https://img.freepik.com/vetores-premium/voce-ganha-brilhante-banner-retro-com-moedas-voadoras-modelo-de-banner-de-design-de-jogo-espaco-do-cassino_32996-1499.jpg?w=1060',
                   }}
                 />
-
-                <Text style={styles.backtext}>You WON</Text>
               </View>
             </FlipCard>
             {count === 0 ? null : (
@@ -288,27 +308,46 @@ const Dashboard = () => {
               style={{width: 200, height: 200}}
             />
             {flip ? (
-              <View style={styles.buttonContainer}>
+              <View style={styles.buttonContaine}>
                 <TouchableOpacity
-                  activeOpacity={0.8}
-                  style={[
-                    {width:200,height:60},
-                    styles.clickview,
-                    {transform: [{scale: buttonScale}]},
-                  ]}
+                  style={{height: 80, width: 210, right: 10}}
                   onPress={handleAnimation}>
-                  <Text
-                    style={[
-                      {
-                        color: animationPassingOverButton ? 'red' : 'black',
-                      },
-                      styles.buttonText,
-                    ]}>
-                    {/* Click on me to collect coins */}
-                    {animationPassingOverButton
-                      ? 'Enjoy the coins'
-                      : 'Click on me to collect coins'}
-                  </Text>
+                  <View style={{height: 80, width: 230}}>
+                    <View
+                      style={{
+                        flex: 1,
+                        padding: 10,
+                      }}>
+                      <Animated.View
+                        style={[
+                          {
+                            backgroundColor: '#a88b32',
+                            borderRadius: 14,
+                          },
+                          heightStyle,
+                        ]}>
+                        <Animated.View
+                          style={[
+                            {
+                              height: '100%',
+                              backgroundColor: 'gold',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                            },
+                            inner,
+                          ]}>
+                          <Text
+                            style={{
+                              color: '#FFF',
+                              fontWeight: 'bold',
+                              fontSize: 20,
+                            }}>
+                            Click Here to Collect
+                          </Text>
+                        </Animated.View>
+                      </Animated.View>
+                    </View>
+                  </View>
                 </TouchableOpacity>
                 <Animated.View
                   style={[
@@ -326,7 +365,7 @@ const Dashboard = () => {
                   style={[
                     {
                       width: 250,
-                      height:50
+                      height: 50,
                     },
                     styles.clickview,
                   ]}
