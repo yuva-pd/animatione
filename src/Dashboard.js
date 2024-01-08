@@ -21,9 +21,11 @@ const Dashboard = () => {
   //state variables
   const [count, setCount] = useState(0);
   const [soundPlayed, setSoundPlayed] = useState(false);
+  const [buttonScale] = useState(new Animated.Value(1));
   const [animationCount, setAnimationCount] = useState(-10);
   const [bshimmering, setbShimmering] = useState(true);
-
+  const [animationPassingOverButton, setAnimationPassingOverButton] =
+    useState(false);
   // Animated values initialization
   const windowWidth = Dimensions.get('window').width;
   const windowHeight = Dimensions.get('window').height;
@@ -60,13 +62,42 @@ const Dashboard = () => {
   // Effect hook
   useEffect(() => {
     ding.setVolume(1);
+    const buttonInterval = setInterval(() => {
+      if (animatedValue._value >= 0 && animatedValue._value <= 250) {
+        setAnimationPassingOverButton(true);
+      } else {
+        setAnimationPassingOverButton(false);
+      }
+    }, 100);
     return () => {
       ding.release();
       if (animationRef.current) {
         clearInterval(animationRef.current);
       }
+      clearInterval(buttonInterval);
     };
   }, []);
+  useEffect(() => {
+    if (animationPassingOverButton) {
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(buttonScale, {
+            toValue: 1.2,
+            duration: 500,
+            useNativeDriver: true,
+          }),
+          Animated.timing(buttonScale, {
+            toValue: 1,
+            duration: 500,
+            useNativeDriver: true,
+          }),
+        ]),
+        {iterations: -1}, // Loop indefinitely
+      ).start();
+    } else {
+      buttonScale.setValue(1);
+    }
+  }, [animationPassingOverButton]);
   // Sound play function
   const playPause = () => {
     ding.play(success => {
@@ -80,6 +111,7 @@ const Dashboard = () => {
   // Animation function
   const handleAnimation = () => {
     handlePress();
+
     setMain(true);
     translations.forEach((translation, index) => {
       const delay = 100 * index;
@@ -155,11 +187,11 @@ const Dashboard = () => {
         animationRef.current = setInterval(() => {
           Animated.timing(animatedValue, {
             toValue: 260,
-            duration: 103,
+            duration: 3000,
             useNativeDriver: false,
           }).start(() => {});
-        }, 1000);
-      }, 1000);
+        }, 2000);
+      }, 2000);
     }
     setStartAnimation(false);
   };
@@ -260,15 +292,22 @@ const Dashboard = () => {
                 <TouchableOpacity
                   activeOpacity={0.8}
                   style={[
-                    {
-                      width: 250,
-                      marginBottom: 0,
-                    },
+                    {width:200,height:60},
                     styles.clickview,
+                    {transform: [{scale: buttonScale}]},
                   ]}
                   onPress={handleAnimation}>
-                  <Text style={styles.buttonText}>
-                    Click on me to collect coins
+                  <Text
+                    style={[
+                      {
+                        color: animationPassingOverButton ? 'red' : 'black',
+                      },
+                      styles.buttonText,
+                    ]}>
+                    {/* Click on me to collect coins */}
+                    {animationPassingOverButton
+                      ? 'Enjoy the coins'
+                      : 'Click on me to collect coins'}
                   </Text>
                 </TouchableOpacity>
                 <Animated.View
@@ -287,7 +326,7 @@ const Dashboard = () => {
                   style={[
                     {
                       width: 250,
-                      marginBottom: 0,
+                      height:50
                     },
                     styles.clickview,
                   ]}

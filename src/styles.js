@@ -12,9 +12,16 @@ export const styles = StyleSheet.create({
     elevation: 4, // Adding elevation for Android shadow effect
   },
   buttonText: {
-    color: 'black',
     textAlign: 'center',
     fontSize: 16,
+  },
+  passingViiew: {
+    position: 'absolute',
+    height: 200,
+    width: 13,
+    backgroundColor: 'white', // Gray color for passing view
+    top: 0,
+    left: 0,
   },
   passingView: {
     position: 'absolute',
@@ -91,9 +98,6 @@ export const styles = StyleSheet.create({
     fontSize: 25,
   },
   clickview: {
-    height: 50,
-    // borderRadius: 20,
-    // backgroundColor: 'white',
     padding: 10,
     backgroundColor: 'gold',
     borderRadius: 10,
