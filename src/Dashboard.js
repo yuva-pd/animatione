@@ -1,4 +1,7 @@
 import React, {useEffect, useState} from 'react';
+import ShimmerPlaceholder from 'react-native-shimmer-placeholder';
+import * as Animatable from 'react-native-animatable';
+
 import {
   View,
   Text,
@@ -21,6 +24,8 @@ const Dashboard = () => {
   const [count, setCount] = useState(0);
   const [soundPlayed, setSoundPlayed] = useState(false);
   const [animationCount, setAnimationCount] = useState(-10);
+  const [bshimmering, setbShimmering] = useState(true);
+
   // Animated values initialization
   const windowWidth = Dimensions.get('window').width;
   const windowHeight = Dimensions.get('window').height;
@@ -136,18 +141,35 @@ const Dashboard = () => {
       });
     });
   };
+
   return (
     <View style={styles.container}>
-      {main ? (
+      {true ? (
         <View style={styles.subcontainer}>
           <View
             style={{
               flex: 1,
             }}>
             <Text style={styles.heading}>Total Gold Coins</Text>
-            <View style={styles.subt}>
-              <Text style={{color: 'black'}}>GOLD COIN</Text>
-            </View>
+            <Animatable.View
+              animation="pulse"
+              easing="ease-out"
+              iterationCount="infinite">
+              <ShimmerPlaceholder
+                style={styles.subt}
+                shimmerColors={['#e0aa07', '#DDDDDD', '#E2E2E2']} // Adjust the shimmer effect colors
+                duration={1500}
+                shimmering={bshimmering}>
+                <Text
+                  style={{
+                    color: 'transparent',
+                    textAlign: 'center',
+                    lineHeight: 50,
+                  }}>
+                  Press Me
+                </Text>
+              </ShimmerPlaceholder>
+            </Animatable.View>
             {animationCount >= 0 ? (
               <View style={styles.ountview}>
                 <Text style={styles.counttext}>{animationCount}</Text>
@@ -220,7 +242,7 @@ const Dashboard = () => {
               onPress={handleAnimation}
               style={[
                 {
-                  width: !flip ? 321 : 250,
+                  width: !flip ? 200 : 250,
                   bottom: !flip ? 270 : -100,
                 },
                 styles.clickview,
